@@ -56,8 +56,7 @@ One can also run pyodev object's example through the pyo `example` function::
 Classes
 -------
 
-Available classes through this package are (type `help(pyodev.CLASS_NAME)` ) in
-an interpreter to see the complete documentation of a specific class):
+Available classes through this package are:
 
 * PWM: Pulse-Width-Modulation oscillator with optional linear-phase lowpass filter.
 
@@ -70,3 +69,9 @@ an interpreter to see the complete documentation of a specific class):
 * HarmoFilter: Filter that removes every nth harmonic of a fundamental frequency.
 
     HarmoFilter(input, freq, harm=2, mul=1, add=0)
+
+To see the complete documentation of a specific class (PWM in this example),
+type in an interpreter::
+
+    help(pyodev.PWM)
+
