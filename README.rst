@@ -1,5 +1,5 @@
-pyo-dev - python classes for building audio effects and synths with pyo
-=======================================================================
+pyo-dev - ready-to-use audio classes for pyo
+============================================
 
 Description
 -----------
@@ -20,6 +20,16 @@ WxPython 3.0 (classic for python 2.7 and phoenix for python 3.5), available
 at:
 
 `https://wxpython.org <https://wxpython.org>`_
+
+Install
+-------
+
+To install under the current distribution of python, simply run the standard
+setup script::
+
+    python setup.py install
+
+You will probably need to run this command as root.
 
 Usage
 -----
@@ -49,14 +59,14 @@ Classes
 Available classes through this package are (type help(pyodev.CLASS_NAME) in
 an interpreter to see the complete documentation of a specific class):
 
-* PWM(freq=100, phase=0, duty=0.5, damp=0, mul=1, add=0)
+* PWM: Pulse-Width-Modulation oscillator with optional linear-phase lowpass filter.
 
-    Pulse-Width-Modulation oscillator with optional linear-phase lowpass filter.
+    PWM(freq=100, phase=0, duty=0.5, damp=0, mul=1, add=0)
 
-* DCO(freq=100, phase=0, shape=0, damp=0, mul=1, add=0)
+* DCO: Digitally-controlled oscillator with optional linear-phase lowpass filter.
 
-    Digitally-controlled oscillator with optional linear-phase lowpass filter.
+    DCO(freq=100, phase=0, shape=0, damp=0, mul=1, add=0)
 
-* HarmoFilter(input, freq, harm=2, mul=1, add=0)
+* HarmoFilter: Filter that removes every nth harmonic of a fundamental frequency.
 
-    Filter that removes every nth harmonic of a fundamental frequency.
+    HarmoFilter(input, freq, harm=2, mul=1, add=0)
