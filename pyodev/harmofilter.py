@@ -6,7 +6,7 @@ class HarmoFilter(PyoObject):
     """
     Filter that removes every nth harmonic of a fundamental frequency.
 
-    HarmEliminator constructs a comb filter based on a fundamental frequency
+    HarmoFilter constructs a comb filter based on a fundamental frequency
     and the order of the first harmonic to remove. All multiples of that
     harmonic will also be filtered out.
 
@@ -26,7 +26,7 @@ class HarmoFilter(PyoObject):
     >>> from pyodev import *
     >>> freq = Choice([200, 250, 300, 350, 400], freq=4)
     >>> ph = LFO(freq, sharp=1)
-    >>> he = HarmEliminator(ph, freq, 3, mul=0.3).out()
+    >>> he = HarmoFilter(ph, freq, 3, mul=0.3).out()
     
     """
     def __init__(self, input, freq, harm=2, mul=1, add=0):
