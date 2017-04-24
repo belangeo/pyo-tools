@@ -44,7 +44,7 @@ class TB303(PyoObject):
         self._cutoff = cutoff
         self._res = res
         self._octave = octave
-        # Audio conversion to facilitate the computation of the delay time.
+        # Audio conversions to facilitate the computation of the oscillator.
         self._afreq = Sig(self._freq)
         self._aduty = Sig(self._duty)
         self._atranspo = Sig(self._octave, mul=12, add=60)

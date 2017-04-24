@@ -40,7 +40,7 @@ class VCO(PyoObject):
         self._phase = phase
         self._shape = shape
         self._damp = damp
-        # Audio conversion to facilitate the computation of the delay time.
+        # Audio conversion to facilitate the computation of the waveform shape.
         self._ashape = Sig(self._shape)
         # Cycle running phase.
         self._cycle = Phasor(freq, phase)

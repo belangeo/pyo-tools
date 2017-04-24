@@ -44,7 +44,7 @@ class OscSync(PyoObject):
         self._master = master
         self._slave = slave
         self._xfade = xfade
-        # Audio conversion to facilitate the computation of the delay time.
+        # Audio conversion to facilitate the computation of the crossfade time.
         self._axfade = Sig(xfade)
         # The master running phase.
         self._phase = Phasor(master)
