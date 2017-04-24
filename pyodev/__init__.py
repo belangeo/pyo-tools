@@ -22,7 +22,7 @@ at:
 Usage
 =====
 
-In order to use the classes in this package, you should first import pyo, and
+In order to use the classes in this package, you should import pyo first, and
 then import pyodev. The order is important especially in the case where the
 double precision version of pyo is to be used. The choice of precision is made
 when importing pyo (or pyo64). Pyodev will then follow the choice made previously.
@@ -33,7 +33,7 @@ Typical program will look like this:
 >>> import pyodev
 >>> s = pyo.Server().boot()
 >>>
->>> # use pyo or pyodev objects to build a processing chain.
+>>> # use pyo and pyodev objects to build a processing chain.
 >>>
 >>> s.gui(locals())
 
