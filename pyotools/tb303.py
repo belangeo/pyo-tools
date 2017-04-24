@@ -139,6 +139,24 @@ class TB303(PyoObject):
         self._octave = x
         self._atranspo.value = x
 
+    def play(self, dur=0, delay=0):
+        for key in self.__dict__.keys():
+            if isinstance(self.__dict__[key], PyoObject):
+                self.__dict__[key].play(dur, delay)
+        return PyoObject.play(self, dur, delay)
+
+    def stop(self):
+        for key in self.__dict__.keys():
+            if isinstance(self.__dict__[key], PyoObject):
+                self.__dict__[key].stop()
+        return PyoObject.stop(self)
+
+    def out(self, chnl=0, inc=1, dur=0, delay=0):
+        for key in self.__dict__.keys():
+            if isinstance(self.__dict__[key], PyoObject):
+                self.__dict__[key].play(dur, delay)
+        return PyoObject.out(self, chnl, inc, dur, delay)
+
     def ctrl(self, map_list=None, title=None, wxnoserver=False):
         self._map_list = [SLMapFreq(self._freq),
                           SLMap(0, 1, "lin", "duty", self._duty),

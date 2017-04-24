@@ -127,6 +127,24 @@ class PWM(PyoObject):
         self._filter = IRWinSinc(self._square, freq=0, order=x*2)
         self._output.value = self._filter
 
+    def play(self, dur=0, delay=0):
+        for key in self.__dict__.keys():
+            if isinstance(self.__dict__[key], PyoObject):
+                self.__dict__[key].play(dur, delay)
+        return PyoObject.play(self, dur, delay)
+
+    def stop(self):
+        for key in self.__dict__.keys():
+            if isinstance(self.__dict__[key], PyoObject):
+                self.__dict__[key].stop()
+        return PyoObject.stop(self)
+
+    def out(self, chnl=0, inc=1, dur=0, delay=0):
+        for key in self.__dict__.keys():
+            if isinstance(self.__dict__[key], PyoObject):
+                self.__dict__[key].play(dur, delay)
+        return PyoObject.out(self, chnl, inc, dur, delay)
+
     def ctrl(self, map_list=None, title=None, wxnoserver=False):
         self._map_list = [SLMapFreq(self._freq),
                           SLMapPhase(self._phase),
