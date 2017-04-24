@@ -158,7 +158,7 @@ class OscSync(PyoObject):
     @xfade.setter
     def xfade(self, x): self.setXfade(x)
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     # Test case...
     s = Server().boot()
 
