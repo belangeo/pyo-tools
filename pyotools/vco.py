@@ -168,8 +168,9 @@ if __name__ == "__main__":
     # Test case...
     s = Server().boot()
 
-    lfo = Sine([.2,.25]).range(0, 0.5)
-    dco = VCO(200, 0, lfo, 8, 0.3).out()
+    lfo = Sine(freq=[.2,.25]).range(0, 0.5)
+    lfo2 = Sine(freq=[.1,.15]).range(0.1, 0.9)
+    dco = VCO(freq=80, phase=lfo2, shape=lfo, damp=8, mul=0.3).out()
     dco.ctrl()
 
     sc = Scope(dco)
