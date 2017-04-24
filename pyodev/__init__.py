@@ -52,9 +52,13 @@ Available classes within this package are:
 
     PWM(freq=100, phase=0, duty=0.5, damp=0, mul=1, add=0)
 
-* DCO: Digitally-controlled oscillator with optional linear-phase lowpass filter.
+* VCO: Voltage-controlled oscillator with optional linear-phase lowpass filter.
 
-    DCO(freq=100, phase=0, shape=0, damp=0, mul=1, add=0)
+    VCO(freq=100, phase=0, shape=0, damp=0, mul=1, add=0)
+
+* TB303: Simple emulation of the Roland TB-303 oscillator.
+
+    TB303(freq=100, duty=0.5, cutoff=1000, res=1, octave=-3, mul=1, add=0)
 
 * HarmoFilter: Filter that removes every nth harmonic of a fundamental frequency.
 
@@ -69,7 +73,8 @@ type in a python interpreter::
 from __future__ import absolute_import
 
 from .pwm import PWM
-from .dco import DCO
+from .vco import VCO
+from .tb303 import TB303
 from .harmofilter import HarmoFilter
 
 PYODEV_VERSION = "0.1.0"

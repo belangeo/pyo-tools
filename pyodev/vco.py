@@ -2,9 +2,9 @@
 # encoding: utf-8
 from pyo import *
 
-class DCO(PyoObject):
+class VCO(PyoObject):
     """
-    Digitally-controlled oscillator with optional linear-phase lowpass filter.
+    Voltage-controlled oscillator with optional linear-phase lowpass filter.
 
     This oscillator can produce, according to its `shape` argument, a waveform
     that crossfades between a sawtooth, a triangle and a ramp (upward sawtooth).
@@ -30,7 +30,7 @@ class DCO(PyoObject):
     >>> s.start()
     >>> from pyodev import *
     >>> shape = Sine(freq=[.2, .25]).range(0, 0.5)
-    >>> dco = DCO(freq=200, phase=0, shape=shape, damp=6, mul=0.3).out()
+    >>> dco = VCO(freq=200, phase=0, shape=shape, damp=6, mul=0.3).out()
     
     """
     def __init__(self, freq=100, phase=0, shape=0, damp=0, mul=1, add=0):
@@ -154,7 +154,7 @@ if __name__ == "__main__":
     s = Server().boot()
 
     lfo = Sine([.2,.25]).range(0, 0.5)
-    dco = DCO(200, 0, lfo, 8, 0.3).out()
+    dco = VCO(200, 0, lfo, 8, 0.3).out()
     dco.ctrl()
 
     sc = Scope(dco)

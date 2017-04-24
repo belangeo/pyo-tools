@@ -42,7 +42,7 @@ class PWM(PyoObject):
         self._phase = phase
         self._duty = duty
         self._damp = damp
-        # Audio conversion to facilitate the computation of the delay time.
+        # Audio conversion to declare the comparison only once.
         self._aduty = Sig(self._duty)
         # Cycle running phase.
         self._cycle = Phasor(freq, phase)
