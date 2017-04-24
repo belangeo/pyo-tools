@@ -1,9 +1,23 @@
 #!/usr/bin/env python
-#------------------------------------------
-# pyotools package setup script.
+
+# Copyright 2017 Olivier Belanger
 #
-# Author: Olivier Belanger, (c) LGPL, 2017.
-#------------------------------------------
+# This file is part of pyo-tools.
+#
+# pyo-tools is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# pyo-tools is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with pyo-tools. If not, see <http://www.gnu.org/licenses/>.
+
+# pyo-tools package setup script.
 
 from distutils.core import setup
 
