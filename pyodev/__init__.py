@@ -60,6 +60,10 @@ Available classes within this package are:
 
     TB303(freq=100, duty=0.5, cutoff=1000, res=1, octave=-3, mul=1, add=0)
 
+* OscSync: A soft sync oscillator which is reset according to a master frequency.
+
+    OscSync(table, master=100, slave=110, xfade=0.5, mul=1, add=0)
+
 * HarmoFilter: Filter that removes every nth harmonic of a fundamental frequency.
 
     HarmoFilter(input, freq, harm=2, mul=1, add=0)
@@ -75,6 +79,7 @@ from __future__ import absolute_import
 from .pwm import PWM
 from .vco import VCO
 from .tb303 import TB303
+from .oscsync import OscSync
 from .harmofilter import HarmoFilter
 
 PYODEV_VERSION = "0.1.0"
