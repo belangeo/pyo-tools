@@ -2,7 +2,7 @@
 Description
 ===========
 
-The `pyodev` package is a collection of python classes for building audio
+The `pyotools` package is a collection of python classes for building audio
 fxs and synths with pyo. This package assumes that the latest stable release
 of pyo is already installed under the current distribution of python. Pyo
 actually supports python 2.7 and 3.5 (but can probably be compiled under any
@@ -22,31 +22,32 @@ at:
 Usage
 =====
 
-In order to use the classes in this package, you should import pyo first, and
-then import pyodev. The order is important especially in the case where the
-double precision version of pyo is to be used. The choice of precision is made
-when importing pyo (or pyo64). Pyodev will then follow the choice made previously.
+In order to use the classes in pyotools package, you should import pyo first,
+and then import pyotools. The order is important especially in the case where
+the double precision version of pyo is to be used. The choice of precision is
+made when importing pyo (or pyo64). pyotools will then follow the choice made
+previously.
 
 Typical program will look like this:
 
 >>> import pyo
->>> import pyodev
+>>> import pyotools
 >>> s = pyo.Server().boot()
 >>>
->>> # use pyo and pyodev objects to build a processing chain.
+>>> # use pyo and pyotools objects to build a processing chain.
 >>>
 >>> s.gui(locals())
 
-One can also run pyodev object's example through the pyo `example` function:
+One can also run pyotools object's example through the pyo `example` function:
 
 >>> import pyo
->>> import pyodev
->>> pyo.example(pyodev.PWM)
+>>> import pyotools
+>>> pyo.example(pyotools.PWM)
 
 Classes
 =======
 
-Available classes within this package are:
+Available classes within the pyotools package are:
 
 * PWM: Pulse-Width-Modulation oscillator with optional linear-phase lowpass filter.
 
@@ -71,8 +72,8 @@ Available classes within this package are:
 To see the complete documentation of a specific class (PWM in this example),
 type in a python interpreter::
 
-    import pyodev
-    help(pyodev.PWM)
+    import pyotools
+    help(pyotools.PWM)
 
 """
 from __future__ import absolute_import
@@ -83,7 +84,7 @@ from .tb303 import TB303
 from .oscsync import OscSync
 from .harmofilter import HarmoFilter
 
-PYODEV_VERSION = "0.1.0"
+PYOTOOLS_VERSION = "0.1.0"
 
 def version():
-    return PYODEV_VERSION
+    return PYOTOOLS_VERSION
