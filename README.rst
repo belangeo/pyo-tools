@@ -81,5 +81,6 @@ Available classes within this package are:
 To see the complete documentation of a specific class (PWM in this example),
 type in a python interpreter::
 
+    import pyodev
     help(pyodev.PWM)
 
