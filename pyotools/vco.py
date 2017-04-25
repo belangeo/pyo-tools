@@ -43,7 +43,7 @@ class VCO(PyoObject):
         
     >>> s = Server().boot()
     >>> s.start()
-    >>> from pyodev import *
+    >>> from pyotools import *
     >>> shape = Sine(freq=[.2, .25]).range(0, 0.5)
     >>> dco = VCO(freq=200, phase=0, shape=shape, damp=6, mul=0.3).out()
     

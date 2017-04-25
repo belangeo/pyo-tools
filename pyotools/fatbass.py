@@ -1,4 +1,3 @@
-# Copyright 2017 Olivier Belanger
 #
 # This file is part of pyo-tools.
 #
@@ -17,13 +16,14 @@
 
 from pyo import *
 
-class TB303(PyoObject):
+class FatBass(PyoObject):
     """
-    Simple emulation of the Roland TB-303 oscillator.
+    Modulated Pulse-Width-Modulation oscillator with resonant lowpass filter.
 
-    The TB303 object produces a square wave with control for the cuty cycle.
-    This waveform is used to excite a 4-poles 24dB/octave resonant lowpass
-    filter with controls for the cutoff frequency and the amount of resonance.
+    This generator contains a carrier unipolar square wave oscillator that is
+    modulated by a square wave bipolar oscillator. The modulator's frequency
+    is interpolated between one or two octaves below the carrier's frequency.
+    A 4-pole 24dB/oct resonant lowpass filter is applied after the modulation.
 
     :Parent: :py:class:`PyoObject`
 
@@ -31,46 +31,58 @@ class TB303(PyoObject):
 
         freq: float or PyoObject, optional
             Frequency in cycles per second. Defaults to 100.
+        octave: float or PyoObject, optional
+            This argument linearly interpolates between a square wave oscillator
+            2 octaves below the fundamental frequency and another square wave
+            oscillator 1 octave below the fundamental frequency. The result 
+            produces the modulating oscillator. Defaults to 0.
+            Defaults to 0.
         duty: float or PyoObject, optional
-            Duty cycle, ie. the fraction of the whole period, between 0 and 1
-            spent on the positive value. Defaults to 0.5.
+            Duty cycle of the carrier oscillator, ie. the fraction of the whole
+            period, between 0 and 1, spent on the positive value. Defaults to 0.5.
         cutoff: float or PyoObject, optional
             Cutoff frequency of the lowpass filter in Hz. Defaults to 1000.
         res: float or PyoObject, optional
             Amount of resonance of the lowpass filter, between 0 and 2. Values
             above 1 produces a self-oscillating filter. Defaults to 1.
-        octave: float or PyoObject, optional
-            Transposition of the oscillator frequency as octave multiplier.
-            The defaults, -3, means three octave below the frequency given as
-            `freq` argument. Fractional value will detune the oscillator.
         
     >>> s = Server().boot()
     >>> s.start()
     >>> from pyotools import *
-    >>> duty = Sine(freq=[.1, .15]).range(0.25, 0.75)
-    >>> out = TB303(750, duty, 3500, 0.1, octave=[-4, -3], mul=0.3).out()
+    >>> octave = Sine([0.15,0.13]).range(0.1, 0.9)
+    >>> duty = Sine([0.07, .1]).range(0.1, 0.5)
+    >>> osc = FatBass(80, octave, duty, 2500, 0, mul=0.4).out()
     
     """
-    def __init__(self, freq=100, duty=0.5, cutoff=1000, res=1, octave=-3, mul=1, add=0):
+    def __init__(self, freq=100, octave=0, duty=0.5, cutoff=5000, res=0, mul=1, add=0):
         PyoObject.__init__(self, mul, add)
         # Raw arguments so that we can retrieve them with the attribute syntax.
         self._freq = freq
+        self._octave = octave
         self._duty = duty
         self._cutoff = cutoff
         self._res = res
-        self._octave = octave
-        # Audio conversions to facilitate the computation of the oscillator.
+        # Audio conversion to declare the comparison only once.
         self._afreq = Sig(self._freq)
+        self._aoctave = Sig(self._octave)
         self._aduty = Sig(self._duty)
-        self._atranspo = Sig(self._octave, mul=12, add=60)
         # Cycle running phase.
-        self._cycle = Phasor(self._afreq * MToT(self._atranspo))
-        # Split the cycle in two parts, 0 and 1 and convert to bipolar waveform.
-        self._square = (self._cycle < Clip(self._aduty, 0.02, 0.98)) - 0.5
-        # Use the square wave to excite a resonant lowpass filter.
-        self._filter = MoogLP(self._square, freq=cutoff, res=res)
-        # Remove D and properly handle "mul" and "add" arguments.
-        self._output = DCBlock(self._filter, mul=mul, add=add)
+        self._cycle = Phasor(self._afreq)
+        # Split the cycle in two parts, 0 and 1.
+        self._unisqr = self._cycle < Scale(Clip(self._aduty, 0, 1), 0, 1, 0.05, 0.95)
+        # 2 octaves down bipolar modulator.
+        self._mod1 = Phasor(self._afreq * 0.25)
+        self._sqr1 = (self._mod1 < 0.5) * 2 - 1
+        # 1 octave down bipolar modulator.
+        self._mod2 = Wrap(self._mod1 * 2)
+        self._sqr2 = (self._mod2 < 0.5) * 2 - 1
+        # Linear interpolation between the two modulators.
+        self._modu = self._sqr1 * (1 - self._aoctave) + self._sqr2 * self._aoctave
+        # Modulate the unipolar oscillator with the interpolated modulator
+        # and lowpass filter the result.
+        self._filter = MoogLP(self._unisqr * self._modu, cutoff, res)
+        # A Sig is the best way to properly handle "mul" and "add" arguments.        
+        self._output = Sig(self._filter, mul, add)
         # Create the "_base_objs" attribute. This is the object's audio output.
         self._base_objs = self._output.getBaseObjects()
 
@@ -86,6 +98,19 @@ class TB303(PyoObject):
         """
         self._freq = x
         self._afreq.value = x
+
+    def setOctave(self, x):
+        """
+        Replace the `octave` attribute.
+
+        :Args:
+
+            x: float or PyoObject
+                New `octave` attribute.
+
+        """
+        self._octave = x
+        self._aoctave.value = x
 
     def setDuty(self, x):
         """
@@ -126,19 +151,6 @@ class TB303(PyoObject):
         self._res = x
         self._filter.res = x
 
-    def setOctave(self, x):
-        """
-        Replace the `octave` attribute.
-
-        :Args:
-
-            x: float or PyoObject
-                New `octave` attribute.
-
-        """
-        self._octave = x
-        self._atranspo.value = x
-
     def play(self, dur=0, delay=0):
         for key in self.__dict__.keys():
             if isinstance(self.__dict__[key], PyoObject):
@@ -159,10 +171,10 @@ class TB303(PyoObject):
 
     def ctrl(self, map_list=None, title=None, wxnoserver=False):
         self._map_list = [SLMapFreq(self._freq),
+                          SLMap(0, 1, "lin", "octave", self._octave),
                           SLMap(0, 1, "lin", "duty", self._duty),
                           SLMap(50, 10000, "log", "cutoff", self._cutoff),
                           SLMap(0, 2, "lin", "res", self._res),
-                          SLMap(-4, 4, "lin", "octave", self._octave),
                           SLMapMul(self._mul)]
         PyoObject.ctrl(self, map_list, title, wxnoserver)
 
@@ -174,8 +186,15 @@ class TB303(PyoObject):
     def freq(self, x): self.setFreq(x)
 
     @property
+    def octave(self):
+        """float or PyoObject. octave shifting between 0 and 1.""" 
+        return self._octave
+    @octave.setter
+    def octave(self, x): self.setOctave(x)
+
+    @property
     def duty(self):
-        """float or PyoObject. Duty cycle between 0 and 1.""" 
+        """float or PyoObject. Duty cycle of the carrier between 0 and 1.""" 
         return self._duty
     @duty.setter
     def duty(self, x): self.setDuty(x)
@@ -194,23 +213,15 @@ class TB303(PyoObject):
     @res.setter
     def res(self, x): self.setRes(x)
 
-    @property
-    def octave(self):
-        """float or PyoObject. Transposition in octave multiplier.""" 
-        return self._octave
-    @octave.setter
-    def octave(self, x): self.setOctave(x)
-
 if __name__ == "__main__":
-    # Test case...
     s = Server().boot()
-    s.amp = 0.1
 
-    duty = Sine(freq=[.1, .15]).range(0.25, 0.75)
-    out = TB303(750, duty, 3500, 0.1, octave=[-4, -3]).out()
-    out.ctrl()
+    octave = Sine([0.15,0.13]).range(0.1, 0.9)
+    duty = Sine([0.07, .1]).range(0.1, 0.5)
+    osc = FatBass(80, octave, duty, 2500, 0, mul=0.4).out()
+    osc.ctrl()
 
-    sc = Scope(out)
+    sc = Scope(osc)
+    sp = Spectrum(osc)
 
     s.gui(locals())
-

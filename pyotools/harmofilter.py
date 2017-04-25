@@ -38,7 +38,7 @@ class HarmoFilter(PyoObject):
 
     >>> s = Server().boot()
     >>> s.start()
-    >>> from pyodev import *
+    >>> from pyotools import *
     >>> freq = Choice([200, 250, 300, 350, 400], freq=4)
     >>> ph = LFO(freq, sharp=1)
     >>> he = HarmoFilter(ph, freq, 3, mul=0.3).out()

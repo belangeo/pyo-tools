@@ -45,7 +45,7 @@ class PWM(PyoObject):
         
     >>> s = Server().boot()
     >>> s.start()
-    >>> from pyodev import *
+    >>> from pyotools import *
     >>> duty = Sine(freq=[.1, .15]).range(0.25, 0.75)
     >>> pwm = PWM(freq=100, phase=0, duty=duty, damp=6, mul=0.3).out()
     

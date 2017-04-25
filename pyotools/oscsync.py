@@ -45,7 +45,7 @@ class OscSync(PyoObject):
         
     >>> s = Server().boot()
     >>> s.start()
-    >>> from pyodev import *
+    >>> from pyotools import *
     >>> table = HarmTable([1, .5, .33, .25, .2, .167, .143, .125, .111, .1])
     >>> master = Sig([80, 80], mul=Randi(min=0.99, max=1.01, freq=[1.3, 1.2]))
     >>> slave = Sine([0.1, 0.15], mul=master, add=master*2)

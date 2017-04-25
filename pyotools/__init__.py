@@ -82,6 +82,10 @@ Available classes within the pyotools package are:
 
     OscSync(table, master=100, slave=110, xfade=0.5, mul=1, add=0)
 
+* FatBass: Modulated Pulse-Width-Modulation oscillator with resonant lowpass filter.
+
+    FatBass(freq=100, octave=0, duty=0.5, cutoff=5000, res=0, mul=1, add=0)
+
 * HarmoFilter: Filter that removes every nth harmonic of a fundamental frequency.
 
     HarmoFilter(input, freq, harm=2, mul=1, add=0)
@@ -99,6 +103,7 @@ from .pwm import PWM
 from .vco import VCO
 from .tb303 import TB303
 from .oscsync import OscSync
+from .fatbass import FatBass
 from .harmofilter import HarmoFilter
 
 PYOTOOLS_VERSION = "0.1.0"
