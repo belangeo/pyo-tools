@@ -77,7 +77,7 @@ class FatBass(PyoObject):
         self._mod2 = Wrap(self._mod1 * 2)
         self._sqr2 = (self._mod2 < 0.5) * 2 - 1
         # Linear interpolation between the two modulators.
-        self._modu = self._sqr1 * (1 - self._aoctave) + self._sqr2 * self._aoctave
+        self._modu = self._sqr1 + (self._sqr2 - self._sqr1) * self._aoctave
         # Modulate the unipolar oscillator with the interpolated modulator
         # and lowpass filter the result.
         self._filter = MoogLP(self._unisqr * self._modu, cutoff, res)

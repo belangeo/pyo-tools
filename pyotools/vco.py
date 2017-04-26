@@ -45,7 +45,7 @@ class VCO(PyoObject):
     >>> s.start()
     >>> from pyotools import *
     >>> shape = Sine(freq=[.2, .25]).range(0, 0.5)
-    >>> dco = VCO(freq=200, phase=0, shape=shape, damp=6, mul=0.3).out()
+    >>> vco = VCO(freq=200, phase=0, shape=shape, damp=6, mul=0.3).out()
     
     """
     def __init__(self, freq=100, phase=0, shape=0, damp=0, mul=1, add=0):
@@ -188,10 +188,10 @@ if __name__ == "__main__":
 
     lfo = Sine(freq=[.2,.25]).range(0, 0.5)
     lfo2 = Sine(freq=[.1,.15]).range(0.1, 0.9)
-    dco = VCO(freq=80, phase=lfo2, shape=lfo, damp=8, mul=0.3).out()
-    dco.ctrl()
+    vco = VCO(freq=80, phase=lfo2, shape=lfo, damp=8, mul=0.3).out()
+    vco.ctrl()
 
-    sc = Scope(dco)
-    sp = Spectrum(dco)
+    sc = Scope(vco)
+    sp = Spectrum(vco)
 
     s.gui(locals())
