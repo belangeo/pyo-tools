@@ -68,8 +68,10 @@ class FatBass(PyoObject):
         self._aduty = Sig(self._duty)
         # Cycle running phase.
         self._cycle = Phasor(self._afreq)
-        # Split the cycle in two parts, 0 and 1.
-        self._unisqr = self._cycle < Scale(Clip(self._aduty, 0, 1), 0, 1, 0.05, 0.95)
+        # Clip the duty stream
+        self._cduty = Clip(self._aduty, 0, 1)
+        # Split the cycle in two parts, 0 and 1. Rescale the cuty between 0.05 and 0.95.
+        self._unisqr = self._cycle < Scale(self._cduty, 0, 1, 0.05, 0.95)
         # 2 octaves down bipolar modulator.
         self._mod1 = Phasor(self._afreq * 0.25)
         self._sqr1 = (self._mod1 < 0.5) * 2 - 1

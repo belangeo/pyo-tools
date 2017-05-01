@@ -90,6 +90,13 @@ Available classes within the pyotools package are:
 
     HarmoFilter(input, freq, harm=2, mul=1, add=0)
 
+* MatrixVerb: Delay-line rotating-matrix reverb inspired by Miller Puckette's rev3~.
+
+    MatrixVerb(input, liveness=0.7, depth=0.7, crossover=3500, highdamp=0.75,
+               balance=0.25, numechoes=8, quality=4, filtorder=2,
+               echoesrange=[0.03, 0.08], echoesmode="linmin", 
+               matrixrange=[0.05, 0.15], matrixmode="linmin", mul=1, add=0)
+
 To see the complete documentation of a specific class (PWM in this example),
 type in a python interpreter::
 
@@ -105,6 +112,7 @@ from .tb303 import TB303
 from .oscsync import OscSync
 from .fatbass import FatBass
 from .harmofilter import HarmoFilter
+from .matrixverb import MatrixVerb
 
 PYOTOOLS_VERSION = "0.1.0"
 
