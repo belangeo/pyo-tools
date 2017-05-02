@@ -577,14 +577,13 @@ class MatrixVerb(PyoObject):
 
 if __name__ == "__main__":
     s = Server().boot()
-    TEST = 3
-    if TEST == 0:
-        i3 = SfPlayer(SNDS_PATH+"/transparent.aif", loop=True, mul=0.5)
-        a = MatrixVerb(i3, liveness=0.9, depth=0.7, crossover=3500, highdamp=0.7, balance=0.35,
-                       numechoes=8, quality=4, echoesrange=[0.02, 0.06], echoesmode="expmin",
-                       matrixrange=[0.04, 0.09], matrixmode="expmax").out()
-        a.ctrl()
-    elif TEST == 1: # Compare echoesmode and matrixmode
+
+    f = Fader(fadein=0.1).play()
+    t = SndTable(SNDS_PATH + "/transparent.aif")
+    src = Looper(t, pitch=1, start=0, dur=t.getDur()+2, xfade=0, mode=1, mul=f)
+
+    TEST = 0
+    if TEST == 0: # Compare echoesmode and matrixmode
         m = Metro(1).play()
         i3 = TrigEnv(m, table=SndTable(SNDS_PATH+"/transparent.aif", stop=0.05), dur=0.05)
         a = MatrixVerb(i3, liveness=0.9, depth=0.7, crossover=3500, highdamp=0.7, balance=1,
@@ -598,21 +597,21 @@ if __name__ == "__main__":
                        matrixrange=[0.04, 0.09], matrixmode="rand")
         d = Selector([a,b,c]).out()
         d.ctrl()
-    elif TEST == 2: # small box
-        f = Fader(fadein=2).play()
-        t = SndTable('/home/olivier/Dropbox/private/snds/tac.wav')
-        src = Looper(t, pitch=1, start=0, dur=2.00, xfade=0, mode=1, mul=1)
-        rev = MatrixVerb(src, liveness=0.65, depth=0.4, crossover=3500, highdamp=0.9, balance=0.5,
-                       numechoes=8, quality=4, echoesrange=[0.005, 0.006], echoesmode="rand",
-                       matrixrange=[0.025, 0.0251], matrixmode="rand", mul=f).out()
-    elif TEST == 3: # large hall
-        f = Fader(fadein=2).play()
-        #t = SndTable('/home/olivier/Dropbox/private/snds/tac.wav')
-        t = SndTable('/home/olivier/Dropbox/private/snds/solitaryLoop.wav')
-        src = Looper(t, pitch=1, start=0, dur=t.getDur()+2, xfade=0, mode=1, mul=1)
-        rev = MatrixVerb(src, liveness=0.85, depth=0.7, crossover=3500, highdamp=0.8, balance=0.4,
-                       numechoes=12, filtorder=2, quality=4, echoesrange=[0.025, 0.06], echoesmode="linmin",
-                       matrixrange=[0.05, 0.12], matrixmode="linmax", mul=f).out()
+    elif TEST == 1: # controls
+        rev = MatrixVerb(src, liveness=0.9, depth=0.7, crossover=3500, highdamp=0.7,
+                         balance=0.35, numechoes=8, quality=4, filtorder=4, 
+                         echoesrange=[0.02, 0.06], echoesmode="expmin",
+                         matrixrange=[0.04, 0.09], matrixmode="expmax").out()
         rev.ctrl()
+    elif TEST == 2: # small box
+        rev = MatrixVerb(src, liveness=0.65, depth=0.4, crossover=3500, highdamp=0.9,
+                         balance=0.5, numechoes=8, quality=4, echoesrange=[0.005, 0.006],
+                         echoesmode="rand", matrixrange=[0.025, 0.0251], matrixmode="rand",
+                         mul=f).out()
+    elif TEST == 3: # large hall
+        rev = MatrixVerb(src, liveness=0.85, depth=0.7, crossover=3500, highdamp=0.8,
+                         balance=0.4, numechoes=12, filtorder=2, quality=4,
+                         echoesrange=[0.025, 0.06], echoesmode="linmin",
+                         matrixrange=[0.05, 0.12], matrixmode="linmax").out()
 
     s.gui(locals())
