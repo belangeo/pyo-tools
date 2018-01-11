@@ -86,6 +86,10 @@ Available classes within the pyotools package are:
 
     FatBass(freq=100, octave=0, duty=0.5, cutoff=5000, res=0, mul=1, add=0)
 
+* BLOsc: Band-limited oscillator that can crossfade between multiple waveforms.
+
+    BLOsc(freq=100, bright=1, shape=0, mul=1, add=0)
+
 * HarmoFilter: Filter that removes every nth harmonic of a fundamental frequency.
 
     HarmoFilter(input, freq, harm=2, mul=1, add=0)
@@ -111,6 +115,7 @@ from .vco import VCO
 from .tb303 import TB303
 from .oscsync import OscSync
 from .fatbass import FatBass
+from .blosc import BLOsc
 from .harmofilter import HarmoFilter
 from .matrixverb import MatrixVerb
 
