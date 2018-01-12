@@ -107,9 +107,10 @@ class BLOsc(PyoObject):
         self._sawtab = LinTable([(0,1), (300,0), (600,0)], size=600)
         self._sqrtab = LinTable([(0,0), (300,1), (600,0)], size=600)
         self._tritab = LinTable([(0,0), (300,0), (600,1)], size=600)
-        self._sawgain = Pointer(self._sawtab, self._cshape)
-        self._sqrgain = Pointer(self._sqrtab, self._cshape)
-        self._trigain = Pointer(self._tritab, self._cshape)
+        self._index = Scale(self._cshape, exp=0.75)
+        self._sawgain = Pointer(self._sawtab, self._index)
+        self._sqrgain = Pointer(self._sqrtab, self._index)
+        self._trigain = Pointer(self._tritab, self._index)
         self._choose = (self._saw * self._sawgain + self._square * self._sqrgain +
                         self._tri * self._triscl * self._trigain) * self._ampscl
 
