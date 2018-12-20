@@ -208,12 +208,13 @@ if __name__ == "__main__":
     # Test case...
     s = Server().boot()
 
-    lfo = Sine(freq=0.05).range(0, 1)
+    lfo = Sine(freq=[0.04, 0.05]).range(0, 1)
     lfo2 = Sine(freq=0.06).range(0.5, 1)
-    m = Metro(0.25).play()
-    amp = TrigEnv(m, CosTable([(0,0),(256,0.3),(7800,0.3),(8192,0)]), dur=0.25)
-    fr = TrigChoice(m, midiToHz([36,43,48,51,55,58,60]))
-    blo = BLOsc(freq=[fr,fr*1.003], bright=lfo2, shape=lfo, mul=amp).out()
+    #m = Metro(0.25).play()
+    #amp = TrigEnv(m, CosTable([(0,0),(256,0.3),(7800,0.3),(8192,0)]), dur=0.25)
+    #fr = TrigChoice(m, midiToHz([36,43,48,51,55,58,60]))
+    blo = BLOsc(freq=80, bright=lfo2, shape=lfo, mul=0.5).out()
+    blo.ctrl()
 
     sc = Scope(blo)
     sp = Spectrum(blo)

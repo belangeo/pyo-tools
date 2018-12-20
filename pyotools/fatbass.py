@@ -36,7 +36,6 @@ class FatBass(PyoObject):
             2 octaves below the fundamental frequency and another square wave
             oscillator 1 octave below the fundamental frequency. The result 
             produces the modulating oscillator. Defaults to 0.
-            Defaults to 0.
         duty: float or PyoObject, optional
             Duty cycle of the carrier oscillator, ie. the fraction of the whole
             period, between 0 and 1, spent on the positive value. Defaults to 0.5.
@@ -44,7 +43,7 @@ class FatBass(PyoObject):
             Cutoff frequency of the lowpass filter in Hz. Defaults to 1000.
         res: float or PyoObject, optional
             Amount of resonance of the lowpass filter, between 0 and 2. Values
-            above 1 produces a self-oscillating filter. Defaults to 1.
+            above 1 produces a self-oscillating filter. Defaults to 0.
         
     >>> s = Server().boot()
     >>> s.start()
