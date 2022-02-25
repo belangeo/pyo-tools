@@ -298,6 +298,10 @@ class MatrixVerb(PyoObject):
         balance: float or PyoObject, optional
             Balance, in the range 0 to 1, between the dry (input) and the wet
             (reverberated) signals. Defaults to 0.25.
+        moddepth: float or PyoObject, optional
+            Depth of the modulators applied to the matrix delays. Defaults to 0.03.
+        modspeed: float or PyoObject, optional
+            Speed of the modulators, in Hz, applied to the matrix delays. Defaults to 1.
         numechoes: int, optional
             The number of early reflexions. Available at initialization time
             only. Defaults to 8.
@@ -343,9 +347,10 @@ class MatrixVerb(PyoObject):
 
     """ 
     def __init__(self, input, liveness=0.7, depth=0.7, crossover=3500,
-                 highdamp=0.75, balance=0.25, numechoes=8, quality=4,
-                 filtorder=2, echoesrange=[0.03, 0.08], echoesmode="linmin", 
-                 matrixrange=[0.05, 0.15], matrixmode="linmin", mul=1, add=0):
+                 highdamp=0.75, balance=0.25, moddepth=0.03, modspeed=1,
+                 numechoes=8, quality=4, filtorder=2, echoesrange=[0.03, 0.08],
+                 echoesmode="linmin", matrixrange=[0.05, 0.15],
+                 matrixmode="linmin", mul=1, add=0):
         PyoObject.__init__(self, mul, add)
 
         # Raw arguments so that we can retrieve them with the attribute syntax.
@@ -355,6 +360,8 @@ class MatrixVerb(PyoObject):
         self._crossover = crossover # lowpass cutoff frequency.
         self._highdamp = highdamp   # high frequencies damping.
         self._balance = balance     # balance dry / wet.
+        self._moddepth = moddepth   # delay line modulation depth
+        self._modspeed = modspeed   # delay line modulation speed
 
         # Get current sampling rate.
         sampleRate = Sig(0).getSamplingRate()
@@ -410,8 +417,11 @@ class MatrixVerb(PyoObject):
         self._matrixin = [self._earlyrefs[-1].re, self._earlyrefs[-1].im]
         self._matrixin.extend([Sig(0) for i in range(num_delays-2)])
 
+        # Reverberation tail delay line modulators.
+        self._modulators_speed = Sig(self._modspeed)
+        self._modulators = [Randi(1 - self._moddepth, 1 + self._moddepth, freq=self._modulators_speed*random.uniform(0.5, 2)) for i in range(num_delays)]
         # Reverberation tail delay lines.
-        self._dlines = [SDelay(self._matrixin[i], delay=self._delays[i]) for i in range(num_delays)]
+        self._dlines = [SDelay(self._matrixin[i], delay=self._delays[i] * self._modulators[i]) for i in range(num_delays)]
         # Lowpass filtering.
         self._lopass = [LoP(self._dlines[i], self._crossover, self._highdamp, i, filtorder) for i in range(num_delays)]
         # Delay lines feedback + input. 
@@ -517,12 +527,41 @@ class MatrixVerb(PyoObject):
         self._balance = x
         self._out.interp = x
 
+    def setModdepth(self, x):
+        """
+        Replace the `moddepth` attribute.
+
+        :Args:
+
+            x: float or PyoObject
+                New `moddepth` attribute.
+
+        """
+        self._moddepth = x
+        [obj.setMin(1 - x) for obj in self._modulators]
+        [obj.setMax(1 + x) for obj in self._modulators]
+
+    def setModspeed(self, x):
+        """
+        Replace the `modspeed` attribute.
+
+        :Args:
+
+            x: float or PyoObject
+                New `modspeed` attribute.
+
+        """
+        self._modspeed = x
+        [obj.setFreq(x * random.uniform(0.5, 2)) for obj in self._modulators]
+
     def ctrl(self, map_list=None, title=None, wxnoserver=False):
         self._map_list = [SLMap(0, 1, "lin", "liveness", self._liveness),
                           SLMap(0, 1, "lin", "depth", self._depth),
                           SLMap(100, 15000, "log", "crossover", self._crossover),
                           SLMap(0, 1, "lin", "highdamp", self._highdamp),
                           SLMap(0, 1, "lin", "balance", self._balance),
+                          SLMap(0.001, 0.95, "log", "moddepth", self._moddepth),
+                          SLMap(0.1, 5, "log", "modspeed", self._modspeed),
                           SLMapMul(self._mul)]
         PyoObject.ctrl(self, map_list, title, wxnoserver)
 
@@ -573,6 +612,22 @@ class MatrixVerb(PyoObject):
     @balance.setter
     def balance(self, x): 
         self.setBalance(x)
+
+    @property
+    def moddepth(self):
+        """float or PyoObject. Average modulation depth."""
+        return self._moddepth
+    @moddepth.setter
+    def moddepth(self, x):
+        self.setModdepth(x)
+
+    @property
+    def modspeed(self):
+        """float or PyoObject. Average modulation speed."""
+        return self._modspeed
+    @modspeed.setter
+    def modspeed(self, x):
+        self.setModspeed(x)
 
 
 if __name__ == "__main__":
