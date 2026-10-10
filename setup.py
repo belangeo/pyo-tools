@@ -19,15 +19,6 @@
 
 # pyo-tools package setup script.
 
-from distutils.core import setup
+from setuptools import setup
 
-DESC = 'Repository of python classes for building audio fxs and synths with pyo.'
-
-setup(name='pyotools',
-      version='0.1.0',
-      description=DESC,
-      author='Olivier Belanger',
-      author_email='belangeo@gmail.com',
-      url='https://github.com/belangeo/pyo-tools/',
-      packages=['pyotools'],
-)
+setup()

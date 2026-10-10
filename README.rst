@@ -5,31 +5,56 @@ Description
 -----------
 
 The `pyotools` package is a collection of python classes for building audio
-fxs and synths with pyo. This package assumes that the latest stable release
-of pyo is already installed under the current distribution of python. Pyo
-actually supports python 2.7 and 3.5 (but can probably be compiled under any
-version of python 3).
+fxs and synths with pyo. This package requires Python 3.7 or later and pyo.
+The pyotools wheel is pure Python and works across Linux distributions and
+CPU architectures, as well as other platforms supported by pyo. Pyo itself
+contains native code and must be installed with the audio libraries required
+by your platform.
 
 Pyo is available on ajaxsoundstudio.com:
 
 `http://ajaxsoundstudio.com/software/pyo/ <http://ajaxsoundstudio.com/software/pyo/>`_
 
 Pyo also offers some GUI facilities to control or visualize the audio
-processing. If you want to use all of pyo’s GUI features, you must install
-WxPython 3.0 (classic for python 2.7 and phoenix for python 3.5), available
-at:
+processing. To use pyo's GUI features, install a compatible wxPython,
+available at:
 
 `https://wxpython.org <https://wxpython.org>`_
 
 Install
 -------
 
-To install under the current distribution of python, simply run the standard
-setup script::
+Install in a virtual environment::
 
-    python setup.py install
+    python3 -m venv .venv
+    . .venv/bin/activate
+    python -m pip install pyotools
 
-You will probably need to run this command as root.
+Pip installs the pyo dependency if needed. On Linux, building pyo may require
+system development packages; see pyo's installation instructions. To install
+this checkout instead, use ``python -m pip install .``.
+
+Build and publish
+-----------------
+
+Create release artifacts from a clean checkout in a virtual environment::
+
+    python -m pip install --upgrade build twine
+    python -m build
+    python -m twine check --strict dist/*
+
+This produces ``dist/pyotools-0.1.0-py3-none-any.whl`` and
+``dist/pyotools-0.1.0.tar.gz``. The wheel contains no native binaries and
+does not need a manylinux build. Both archives include the package license.
+
+After checking the version in ``pyproject.toml`` and
+``pyotools.PYOTOOLS_VERSION``, upload both artifacts using your PyPI account::
+
+    python -m twine upload dist/pyotools-0.1.0-py3-none-any.whl dist/pyotools-0.1.0.tar.gz
+
+PyPI does not allow replacing an uploaded release file. For a subsequent
+release, update both version values and build into an empty ``dist/``
+directory before uploading. Keep PyPI credentials outside this repository.
 
 Usage
 -----
